@@ -1,17 +1,21 @@
-require './router/loader'
-
+require './weather/loader'
+include Geokit::Geocoders
 class App < Sinatra::Application
 
-  # Remember that this is a helper function that will process each request (regardless of endpoint) before
-  # processing the get/post/put sections below
   before do
     content_type 'application/json'
-    # [...other code will go here, if needed...]
   end
 
-  # You'll repeat this for each endpoint this app will host and for each HTTP method
-  get '/<whatever_path>' do
-    # [...your code will go here...]
+  get '/weather' do
+    if params[:mode] = 'zip'
+      weather = Weather_man.get_weather_zip params[:zip_code].to_i
+      {status: 'ok', data: weather}.to_json
+    elsif params[:mode] = 'coordinates'
+      zip_code = (GoogleGeocoder.reverse_geocode [params[:lat].to_i, params[:lon].to_i]).zip
+      weather = Weather_man.get_weather_zip zip_code
+      {status: 'ok', data: weather}.to_json
+    else
+      {status: 'bad_mode'}.to_json
+    end
   end
-
 end

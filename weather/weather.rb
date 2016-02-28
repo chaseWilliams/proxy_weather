@@ -1,7 +1,3 @@
-#weather.rb
-require 'rest-client'
-require File.expand_path('../flickr.rb', __FILE__)
-include Flickrd
 
 #this module allows for a weather data fetch, supplied via the getWeather method.
 module Weather_man

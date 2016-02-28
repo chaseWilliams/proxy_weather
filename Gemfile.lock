@@ -3,6 +3,7 @@ GEM
   specs:
     domain_name (0.5.20160128)
       unf (>= 0.0.5, < 1.0.0)
+    geokit (1.10.0)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
     mime-types (2.99)
@@ -27,6 +28,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  geokit
   rest-client
   sinatra
 
