@@ -32,7 +32,7 @@ module Weather_man
   end
 
   def self.openweathermap params
-    return JSON.parse RestClient.get 'http://api.openweathermap.org/data/2.5/weather?' + params + '&APPID=bd43836512d5650838d83c93c4412774'
+    return JSON.parse RestClient.get 'http://api.openweathermap.org/data/2.5/weather?' + params + "&APPID=#{ENV['OWM_KEY']}"
   end
 
   class << self
