@@ -11,7 +11,7 @@ class App < Sinatra::Application
     content_type 'application/json'
   end
 
-  get '/weather' do
+  get '/' do
     if params[:mode] == 'zip'
       weather = @w_proxy.weather_is 'zip', params[:zip_code].to_i
       {status: 'ok', data: weather}.to_json
