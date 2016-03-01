@@ -1,18 +1,23 @@
 require './weather/loader'
 include Geokit::Geocoders
+
 class App < Sinatra::Application
+
+  def initialize
+    @w_proxy = Weather_Man::Proxy.new
+  end
 
   before do
     content_type 'application/json'
   end
 
   get '/weather' do
-    if params[:mode] = 'zip'
-      weather = Weather_man.weather_is 'zip', params[:zip_code].to_i
+    if params[:mode] == 'zip'
+      weather = @w_proxy.weather_is 'zip', params[:zip_code].to_i
       {status: 'ok', data: weather}.to_json
-    elsif params[:mode] = 'coordinates'
+    elsif params[:mode] == 'coordinates'
       zip_code = (GoogleGeocoder.reverse_geocode [params[:lat].to_i, params[:lon].to_i]).zip
-      weather = Weather_man.weather_is 'zip', zip_code
+      weather = @w_proxy.weather_is 'zip', zip_code
       {status: 'ok', data: weather}.to_json
     else
       {status: 'bad_mode'}.to_json
