@@ -20,8 +20,7 @@ module Weather_Man
           windiness: response['wind']['speed'].to_f.round(1),
           condition_id: response['weather'][0]['id'].to_i,
           condition_name: response['weather'][0]['main'],
-          condition_description: response['weather'][0]['description'],
-          condition_img: response['weather'][0]['icon']
+          condition_description: response['weather'][0]['description']
         }
         @redis.set 'weather_data', weather_data.to_json
         @redis.expire 'weather_data', 600
