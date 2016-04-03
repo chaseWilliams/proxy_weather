@@ -11,6 +11,8 @@
 /test/version_tmp/
 /tmp/
 
+dump.rbd
+
 ##Apcera
 continuum*
 
