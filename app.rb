@@ -25,4 +25,21 @@ class App < Sinatra::Application
       {status: 'bad_mode'}.to_json
     end
   end
+
+  get '/pure' do
+    if params[:mode] == 'zip'
+      weather = @w_proxy.pure_data 'zip', params[:zipcode].to_i
+      {status: 'ok', data: weather}.to_json
+    elsif params[:mode] == 'coordinates'
+      geoloc = GoogleGeocoder.reverse_geocode [params[:lat].to_i, params[:lon].to_i]
+      zip_code = geoloc.zip
+      weather = @w_proxy.pure_data 'zip', zip_code #add city name
+      puts "The city is #{geoloc.city}"
+      weather.store 'city', geoloc.city
+      weather.store 'zipcode', zip_code
+      {status: 'ok', data: weather}.to_json
+    else
+      {status: 'bad_mode'}.to_json
+    end
+  end
 end

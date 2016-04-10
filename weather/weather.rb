@@ -8,11 +8,18 @@ module Weather_Man
       @logger_err = Logger.new(STDERR)
     end
 
+    def pure_data mode, geo
+      mode == 'zip' ? identifier = "zip=#{geo}" : identifer = "id=#{geo}"
+      RestClient.get 'http://api.openweathermap.org/data/2.5/weather?' + identifer + "&APPID=#{ENV['OWM_KEY']}"
+    end
+
+    # similar to pure_data, but some post-fetch processing/trimming
     def weather_is mode, geo
       @logger_out.info "The result for 'exists' is #{@redis.exists 'weather_data'}"
       if !@redis.exists('weather_data')
-        mode == 'zip' ? identifier = "zip=#{geo}" : identifer = "id=#{geo}"
-        response = openweathermap identifier
+
+        response = JSON.parse openweathermap mode, geo
+        @logger_out.info "result is #{response}"
         weather_data = {
           temp: (1.8*(response['main']['temp'].to_f-273)+32).round,
           cloudiness: response['clouds']['all'].to_f.round,
@@ -34,9 +41,5 @@ module Weather_Man
         return data
       end
     end
-    def openweathermap params
-      return JSON.parse RestClient.get 'http://api.openweathermap.org/data/2.5/weather?' + params + "&APPID=#{ENV['OWM_KEY']}"
-    end
-    private :openweathermap
   end
 end
