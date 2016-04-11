@@ -18,6 +18,7 @@ class App < Sinatra::Application
       zip_code = geoloc.zip
       weather = @w_proxy.weather_is 'zip', zip_code #add city name
       puts "The city is #{geoloc.city}"
+      # add in the city and zipcode of the location retrieved from
       weather.store 'city', geoloc.city
       weather.store 'zipcode', zip_code
       {status: 'ok', data: weather}.to_json
@@ -35,9 +36,7 @@ class App < Sinatra::Application
       zip_code = geoloc.zip
       weather = @w_proxy.pure_data 'zip', zip_code #add city name
       puts "The city is #{geoloc.city}"
-      weather.store 'city', geoloc.city
-      weather.store 'zipcode', zip_code
-      {status: 'ok', data: weather}.to_json
+      weather
     else
       {status: 'bad_mode'}.to_json
     end

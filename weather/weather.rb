@@ -9,16 +9,21 @@ module Weather_Man
     end
 
     def pure_data mode, geo
-      mode == 'zip' ? identifier = "zip=#{geo}" : identifer = "id=#{geo}"
-      RestClient.get 'http://api.openweathermap.org/data/2.5/weather?' + identifer + "&APPID=#{ENV['OWM_KEY']}"
+      if mode == 'zip'
+        identifier = "zip=#{geo}"
+      else
+        identifier = "id=#{geo}"
+      end
+      data = RestClient.get 'http://api.openweathermap.org/data/2.5/weather?' + identifier + "&APPID=#{ENV['OWM_KEY']}"
+      @logger_out.info "Acquired the data: #{data}"
+      data
     end
 
     # similar to pure_data, but some post-fetch processing/trimming
     def weather_is mode, geo
       @logger_out.info "The result for 'exists' is #{@redis.exists 'weather_data'}"
       if !@redis.exists('weather_data')
-
-        response = JSON.parse openweathermap mode, geo
+        response = JSON.parse pure_data mode, geo
         @logger_out.info "result is #{response}"
         weather_data = {
           temp: (1.8*(response['main']['temp'].to_f-273)+32).round,
